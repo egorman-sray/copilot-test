@@ -1,1 +1,1 @@
-Write your review in spanish.
+When performing a code review, respond in Spanish.
