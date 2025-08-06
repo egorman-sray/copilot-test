@@ -1,48 +1,15 @@
-# Python
+# Python cache and build artifacts :)
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
 *.egg
-MANIFEST
+*.egg-info/
+dist/
+build/
+.eggs/
 
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
-
-# Virtual environments
+# Virtual environments :)
 .env
 .venv
 env/
@@ -51,14 +18,14 @@ ENV/
 env.bak/
 venv.bak/
 
-# IDEs
+# IDE and editor files :)
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS generated files
+# OS generated files :)
 .DS_Store
 .DS_Store?
 ._*
@@ -67,17 +34,32 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
-# API Keys and sensitive data
+# Google Cloud credentials and sensitive data :)
+*.json
 *.key
 *.pem
-*.p12
+service-account-key.json
+credentials.json
+
+# Environment files :)
 .env
 .env.local
 .env.*.local
-secrets.json
-config.json
-credentials.json
 
-# Logs
+# Logs :)
 *.log
 logs/
+
+# Testing :)
+.coverage
+.pytest_cache/
+.tox/
+.nox/
+htmlcov/
+
+# Docker :)
+.dockerignore
+
+# Temporary files :)
+*.tmp
+*.temp

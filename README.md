@@ -1,23 +1,33 @@
-# Copilot Test Project
+# Pub/Sub to GCS Microservice :)
 
-A simple Python project for testing and demonstrating API key configuration and GitHub Copilot integration.
+A Python microservice that consumes messages from Google Cloud Pub/Sub and stores them in Google Cloud Storage buckets.
 
-## Overview
+## Overview :)
 
-This project contains a basic Python script that demonstrates API key management and serves as a testing ground for GitHub Copilot functionality.
+This microservice provides a simple and reliable way to:
+- Listen for messages from a Google Cloud Pub/Sub subscription
+- Process and transform messages with metadata
+- Store processed messages as JSON files in Google Cloud Storage
+- Handle errors gracefully with proper logging and retry mechanisms
 
-## Files
+## Features :)
 
-- `test.py` - Main Python script containing API key configuration
-- `.github/copilot-instructions.md` - GitHub Copilot configuration instructions
+- **Environment-based configuration**: All secrets and settings via environment variables
+- **Concurrent processing**: Efficient message handling with thread pools
+- **Error handling**: Proper message acknowledgment and retry logic
+- **Health checks**: Built-in connectivity verification
+- **Structured logging**: Comprehensive logging for monitoring and debugging
+- **Graceful shutdown**: Clean service termination on interrupt signals
 
-## Setup
+## Prerequisites :)
 
-### Prerequisites
+- Python 3.8+
+- Google Cloud Project with:
+  - Pub/Sub subscription configured
+  - Cloud Storage bucket created
+  - Service account with appropriate permissions
 
-- Python 3.x installed on your system
-
-### Configuration
+## Installation :)
 
 1. Clone the repository:
    ```bash
@@ -25,43 +35,112 @@ This project contains a basic Python script that demonstrates API key management
    cd copilot-test
    ```
 
-2. Configure your API key:
-   - Open `test.py`
-   - Replace `"blah"` with your actual API key value
-   - **Important**: Never commit real API keys to version control
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### Security Best Practices
+## Configuration :)
 
-- Use environment variables for sensitive data:
-  ```python
-  import os
-  MY_API_KEY = os.getenv('API_KEY', 'default_value')
-  ```
-- Consider using `.env` files with python-dotenv for local development
-- Add sensitive files to `.gitignore`
+Set the following environment variables:
 
-## Usage
+### Required Variables :)
+- `GOOGLE_CLOUD_PROJECT`: Your Google Cloud project ID
+- `PUBSUB_SUBSCRIPTION`: Name of the Pub/Sub subscription to consume from
+- `GCS_BUCKET_NAME`: Name of the GCS bucket to store messages
 
-Run the test script:
+### Optional Variables :)
+- `MAX_MESSAGES`: Maximum number of messages to process concurrently (default: 10)
+- `ACK_DEADLINE_SECONDS`: Message acknowledgment deadline (default: 60)
+
+### Example Configuration :)
 ```bash
-python test.py
+export GOOGLE_CLOUD_PROJECT="my-project-id"
+export PUBSUB_SUBSCRIPTION="my-subscription"
+export GCS_BUCKET_NAME="my-storage-bucket"
+export MAX_MESSAGES="20"
+export ACK_DEADLINE_SECONDS="120"
 ```
 
-## Development
+## Usage :)
 
-This project is designed for:
-- Testing GitHub Copilot integration
-- Demonstrating basic Python API key management
-- Serving as a template for simple Python projects
+### Running the Microservice :)
+```bash
+python main.py
+```
 
-## Contributing
+### Docker Deployment :)
+```bash
+# Build the image
+docker build -t pubsub-gcs-microservice .
+
+# Run with environment variables
+docker run -e GOOGLE_CLOUD_PROJECT="my-project" \
+           -e PUBSUB_SUBSCRIPTION="my-sub" \
+           -e GCS_BUCKET_NAME="my-bucket" \
+           pubsub-gcs-microservice
+```
+
+## Message Format :)
+
+The microservice stores messages in the following JSON format:
+```json
+{
+  "message_id": "1234567890",
+  "data": "Original message content",
+  "attributes": {
+    "key1": "value1",
+    "key2": "value2"
+  },
+  "publish_time": "2023-12-01T10:30:00.000Z",
+  "processed_at": "2023-12-01T10:30:05.123Z"
+}
+```
+
+## Security Best Practices :)
+
+- **Never commit credentials**: Use environment variables or cloud-native authentication
+- **Service Account**: Use least-privilege service accounts for cloud access
+- **Network Security**: Deploy in private networks when possible
+- **Monitoring**: Enable Cloud Logging and Monitoring for production deployments
+
+## Development :)
+
+### Local Development with .env :)
+Create a `.env` file for local development:
+```env
+GOOGLE_CLOUD_PROJECT=my-project-id
+PUBSUB_SUBSCRIPTION=my-subscription
+GCS_BUCKET_NAME=my-bucket
+```
+
+### Health Check :)
+The service includes a health check endpoint that verifies:
+- Pub/Sub subscription accessibility
+- GCS bucket connectivity
+
+## Monitoring :)
+
+The microservice logs important events:
+- Message processing start/completion
+- Successful GCS uploads
+- Error conditions and retries
+- Health check results
+
+## Error Handling :)
+
+- **Message Processing Failures**: Messages are not acknowledged and will be retried
+- **Connection Issues**: Service will log errors and attempt to reconnect
+- **Invalid Configuration**: Service fails fast with clear error messages
+
+## Contributing :)
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes
-4. Add appropriate documentation
+3. Add tests for new functionality
+4. Ensure all tests pass
 5. Submit a pull request
 
-## License
+## License :)
 
-This project is for testing purposes.
+This project is open source and available under the MIT License.
