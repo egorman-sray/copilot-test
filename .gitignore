@@ -1,0 +1,65 @@
+# Python cache and build artifacts :)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments :)
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE and editor files :)
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files :)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Google Cloud credentials and sensitive data :)
+*.json
+*.key
+*.pem
+service-account-key.json
+credentials.json
+
+# Environment files :)
+.env
+.env.local
+.env.*.local
+
+# Logs :)
+*.log
+logs/
+
+# Testing :)
+.coverage
+.pytest_cache/
+.tox/
+.nox/
+htmlcov/
+
+# Docker :)
+.dockerignore
+
+# Temporary files :)
+*.tmp
+*.temp
