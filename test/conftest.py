@@ -10,10 +10,9 @@ def sample_identifier() -> str:
 
 
 @pytest.fixture
-def sample_resolved_data() -> dict[str, str | float]:
+def sample_resolved_data() -> dict[str, str]:
     """Fixture providing sample resolved entity data."""
     return {
         "resolved_identifier": "AAPL",
         "entity_type": "EQUITY",
-        "confidence": 0.95,
     }

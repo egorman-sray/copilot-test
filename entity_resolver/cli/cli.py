@@ -19,23 +19,23 @@ logger = structlog.get_logger(__name__)
     "--type",
     "identifier_type",
     default="unknown",
-    help="Type of the identifier (e.g., ISIN, LEI, ticker)",
+    help="Type of the identifier (e.g., ISIN, LEI, CUSIP)",
 )
 @click.option(
     "--api-url",
-    envvar="RESOLVE_API_URL",
+    envvar="RESOLVE_SERVICE__API_URL",
     help="Override the resolve API URL",
 )
 @click.option(
-    "--api-key",
-    envvar="RESOLVE_API_KEY",
-    help="Override the API key",
+    "--auth0-token",
+    envvar="AUTH0_TOKEN",
+    help="Auth0 token for authentication",
 )
 def resolve(
     identifier: str,
     identifier_type: str,
     api_url: str | None,
-    api_key: str | None,
+    auth0_token: str | None,
 ) -> None:
     """Resolve a company entity identifier.
 
@@ -49,9 +49,9 @@ def resolve(
     entity_id = EntityIdentifier(value=identifier, type=identifier_type)
 
     service = ResolveService(
-        api_url=api_url or settings.resolve_api_url,
-        api_key=api_key or settings.resolve_api_key,
-        timeout=settings.resolve_api_timeout,
+        api_url=api_url or settings.resolve_service.full_url,
+        auth0_token=auth0_token or "",
+        timeout=settings.resolve_service.timeout,
     )
 
     resolved = service.resolve(entity_id)
@@ -60,8 +60,7 @@ def resolve(
         click.echo("\n✓ Successfully resolved identifier:")
         click.echo(f"  Original:   {resolved.original_identifier}")
         click.echo(f"  Resolved:   {resolved.resolved_identifier}")
-        click.echo(f"  Type:       {resolved.entity_type}")
-        click.echo(f"  Confidence: {resolved.confidence:.2%}\n")
+        click.echo(f"  Type:       {resolved.entity_type}\n")
         sys.exit(0)
     else:
         click.echo("\n✗ Failed to resolve identifier\n", err=True)

@@ -12,11 +12,11 @@ def test_resolve_service_initialization() -> None:
     """Test ResolveService initialization."""
     service = ResolveService(
         api_url="https://api.example.com/resolve",
-        api_key="test-key",
+        auth0_token="test-token",
         timeout=30,
     )
     assert service.api_url == "https://api.example.com/resolve"
-    assert service.api_key == "test-key"
+    assert service.auth0_token == "test-token"
     assert service.timeout == 30
 
 
@@ -24,7 +24,7 @@ def test_resolve_service_strips_trailing_slash() -> None:
     """Test that ResolveService strips trailing slash from URL."""
     service = ResolveService(
         api_url="https://api.example.com/resolve/",
-        api_key="test-key",
+        auth0_token="test-token",
     )
     assert service.api_url == "https://api.example.com/resolve"
 
@@ -36,7 +36,6 @@ def test_resolve_success(mock_client_class: Mock) -> None:
     mock_response.json.return_value = {
         "resolved_identifier": "AAPL",
         "entity_type": "EQUITY",
-        "confidence": 0.95,
     }
     mock_response.raise_for_status = Mock()
 
@@ -48,7 +47,7 @@ def test_resolve_success(mock_client_class: Mock) -> None:
 
     service = ResolveService(
         api_url="https://api.example.com/resolve",
-        api_key="test-key",
+        auth0_token="test-token",
     )
     identifier = EntityIdentifier(value="US0378331005", type="ISIN")
     resolved = service.resolve(identifier)
@@ -57,7 +56,6 @@ def test_resolve_success(mock_client_class: Mock) -> None:
     assert resolved.original_identifier == "US0378331005"
     assert resolved.resolved_identifier == "AAPL"
     assert resolved.entity_type == "EQUITY"
-    assert resolved.confidence == 0.95
 
 
 @patch("entity_resolver.service.resolve_service.httpx.Client")
@@ -77,7 +75,7 @@ def test_resolve_http_error(mock_client_class: Mock) -> None:
 
     service = ResolveService(
         api_url="https://api.example.com/resolve",
-        api_key="test-key",
+        auth0_token="test-token",
     )
     identifier = EntityIdentifier(value="INVALID", type="ISIN")
     resolved = service.resolve(identifier)
@@ -96,7 +94,7 @@ def test_resolve_request_error(mock_client_class: Mock) -> None:
 
     service = ResolveService(
         api_url="https://api.example.com/resolve",
-        api_key="test-key",
+        auth0_token="test-token",
     )
     identifier = EntityIdentifier(value="US0378331005", type="ISIN")
     resolved = service.resolve(identifier)
@@ -105,8 +103,8 @@ def test_resolve_request_error(mock_client_class: Mock) -> None:
 
 
 @patch("entity_resolver.service.resolve_service.httpx.Client")
-def test_resolve_with_api_key_in_headers(mock_client_class: Mock) -> None:
-    """Test that API key is included in request headers."""
+def test_resolve_with_auth0_token_in_headers(mock_client_class: Mock) -> None:
+    """Test that Auth0 token is included in request headers."""
     mock_response = Mock()
     mock_response.json.return_value = {
         "resolved_identifier": "AAPL",
@@ -122,7 +120,7 @@ def test_resolve_with_api_key_in_headers(mock_client_class: Mock) -> None:
 
     service = ResolveService(
         api_url="https://api.example.com/resolve",
-        api_key="test-key-123",
+        auth0_token="test-token-123",
     )
     identifier = EntityIdentifier(value="US0378331005", type="ISIN")
     service.resolve(identifier)
@@ -130,4 +128,4 @@ def test_resolve_with_api_key_in_headers(mock_client_class: Mock) -> None:
     mock_client.post.assert_called_once()
     call_kwargs = mock_client.post.call_args[1]
     assert "headers" in call_kwargs
-    assert call_kwargs["headers"]["Authorization"] == "Bearer test-key-123"
+    assert call_kwargs["headers"]["Authorization"] == "Bearer test-token-123"

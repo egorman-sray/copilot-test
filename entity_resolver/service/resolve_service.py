@@ -13,16 +13,16 @@ logger = structlog.get_logger(__name__)
 class ResolveService:
     """Service for resolving company entity identifiers."""
 
-    def __init__(self, api_url: str, api_key: str, timeout: int = 30):
+    def __init__(self, api_url: str, auth0_token: str, timeout: int = 30):
         """Initialize the resolve service.
 
         Args:
-            api_url: The base URL of the resolve API
-            api_key: API key for authentication
+            api_url: The full URL of the resolve API
+            auth0_token: Auth0 token for authentication
             timeout: Request timeout in seconds
         """
         self.api_url = api_url.rstrip("/")
-        self.api_key = api_key
+        self.auth0_token = auth0_token
         self.timeout = timeout
         logger.info(
             "ResolveService initialized",
@@ -44,8 +44,8 @@ class ResolveService:
         try:
             with httpx.Client(timeout=self.timeout) as client:
                 headers = {}
-                if self.api_key:
-                    headers["Authorization"] = f"Bearer {self.api_key}"
+                if self.auth0_token:
+                    headers["Authorization"] = f"Bearer {self.auth0_token}"
 
                 response = client.post(
                     f"{self.api_url}",
@@ -60,7 +60,6 @@ class ResolveService:
                     original_identifier=identifier.value,
                     resolved_identifier=data.get("resolved_identifier", ""),
                     entity_type=data.get("entity_type", "unknown"),
-                    confidence=data.get("confidence", 1.0),
                 )
 
                 logger.info(

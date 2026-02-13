@@ -18,7 +18,6 @@ def test_cli_resolve_success() -> None:
             original_identifier="US0378331005",
             resolved_identifier="AAPL",
             entity_type="EQUITY",
-            confidence=0.95,
         )
         mock_service.resolve.return_value = mock_resolved
         mock_service_class.return_value = mock_service
@@ -57,7 +56,6 @@ def test_cli_with_type_option() -> None:
             original_identifier="US0378331005",
             resolved_identifier="AAPL",
             entity_type="EQUITY",
-            confidence=0.95,
         )
         mock_service.resolve.return_value = mock_resolved
         mock_service_class.return_value = mock_service

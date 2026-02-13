@@ -1,19 +1,19 @@
 # Entity Resolver
 
-A CLI tool for resolving company entity identifiers using a REST API service.
+A CLI tool for resolving company entity identifiers using the ESGBook resolve API service.
 
 ## Overview
 
-This Python application provides a command-line interface to resolve company entity identifiers (such as ISIN, LEI, ticker symbols) through a resolve API service. It follows the arabesque-sray organization's Python best practices for project structure, logging, and configuration management.
+This Python application provides a command-line interface to resolve company entity identifiers (such as ISIN, LEI, CUSIP, ticker symbols) through the ESGBook resolve API service. It follows the arabesque-sray organization's Python best practices for project structure, logging, and configuration management.
 
 ## Features
 
 - 🚀 Simple CLI interface for entity resolution
 - 🔧 Configurable via environment variables or command-line options
-- 📊 Structured JSON logging with structlog
-- ✅ Comprehensive test coverage
+- 📊 GCP-compatible structured JSON logging with structlog
+- ✅ Comprehensive test coverage (94%)
 - 🏗️ Hexagonal architecture with clear separation of concerns
-- 🔐 Secure API key authentication
+- 🔐 Auth0 authentication support
 
 ## Project Structure
 
@@ -22,8 +22,8 @@ The project follows the organization's standard Python directory structure:
 ```
 entity-resolver/
 ├── entity_resolver/          # Main package
-│   ├── entity/              # Domain entities
-│   ├── service/             # Application services
+│   ├── entity/              # Domain entities with identifier types
+│   ├── service/             # Application services (resolve API client)
 │   ├── cli/                 # Command-line interface
 │   ├── config/              # Configuration and logging setup
 │   └── main.py              # Application entry point
@@ -62,13 +62,32 @@ Edit `.env` with your configuration:
 
 ```bash
 # Entity Resolver API Configuration
-RESOLVE_API_URL=https://api.example.com/resolve
-RESOLVE_API_KEY=your-api-key-here
-RESOLVE_API_TIMEOUT=30
+RESOLVE_SERVICE__API_URL=https://staging.app.dev.esgbook.com/api
+RESOLVE_SERVICE__API_PATH=entities/lookup
+RESOLVE_SERVICE__TIMEOUT=30
+
+# Auth0 Configuration
+AUTH0_TOKEN=your-auth0-token-here
 
 # Logging Configuration
 LOG_LEVEL=INFO
 ```
+
+### Supported Identifier Types
+
+The application supports the following entity identifier types:
+
+- `CUSIP` - Committee on Uniform Securities Identification Procedures
+- `ISIN` - International Securities Identification Number
+- `SEDOL` - Stock Exchange Daily Official List
+- `SRAY_ENTITY_ID` - S-Ray internal entity identifier
+- `ASSET_ID` - Asset identifier
+- `FS_ENTITY_ID` - FactSet entity identifier
+- `ENTITY_ID` - Generic entity identifier
+- `FIGI` - Financial Instrument Global Identifier
+- `TICKER_EXCHANGE` - Ticker symbol with exchange
+- `LEI` - Legal Entity Identifier
+- `SERIES_ID` - Series identifier
 
 ## Usage
 
@@ -90,10 +109,10 @@ entity-resolver US0378331005 --type ISIN
 
 ### Override API Configuration
 
-Override the API URL or key via command-line options:
+Override the API URL or Auth0 token via command-line options:
 
 ```bash
-entity-resolver US0378331005 --api-url https://custom.api.com/resolve --api-key your-key
+entity-resolver US0378331005 --api-url https://custom.api.com/entities/lookup --auth0-token your-token
 ```
 
 ### Using Environment Variables
@@ -101,8 +120,8 @@ entity-resolver US0378331005 --api-url https://custom.api.com/resolve --api-key 
 You can also set configuration via environment variables:
 
 ```bash
-export RESOLVE_API_URL=https://api.example.com/resolve
-export RESOLVE_API_KEY=your-api-key
+export RESOLVE_SERVICE__API_URL=https://staging.app.dev.esgbook.com/api
+export AUTH0_TOKEN=your-auth0-token
 entity-resolver US0378331005
 ```
 
@@ -115,7 +134,6 @@ Successful resolution:
   Original:   US0378331005
   Resolved:   AAPL
   Type:       EQUITY
-  Confidence: 95.00%
 ```
 
 Failed resolution:
@@ -168,10 +186,11 @@ This application follows hexagonal architecture principles:
 This project follows the organization's Python best practices:
 
 1. **Directory Structure**: Flat layout with hexagonal architecture
-2. **Data Modeling**: Uses standard dataclasses for simple internal entities
-3. **Configuration**: Uses Pydantic BaseSettings for environment-based config
-4. **Logging**: Uses structlog with JSON output for GCP compatibility
-5. **Testing**: Comprehensive test suite with pytest
+2. **Data Modeling**: Uses standard dataclasses for simple internal entities with enum for identifier types
+3. **Configuration**: Uses Pydantic BaseSettings with nested config for resolve service
+4. **Logging**: Uses esgbook-py logging setup with GCP-compatible JSON output (includes severity field)
+5. **Testing**: Comprehensive test suite with pytest (94% coverage)
+6. **Authentication**: Auth0 token-based authentication
 
 ## API Contract
 
@@ -180,8 +199,8 @@ The resolver service expects the following API contract:
 ### Request
 
 ```json
-POST /resolve
-Authorization: Bearer <api-key>
+POST /entities/lookup
+Authorization: Bearer <auth0-token>
 Content-Type: application/json
 
 {
@@ -195,8 +214,7 @@ Content-Type: application/json
 ```json
 {
   "resolved_identifier": "AAPL",
-  "entity_type": "EQUITY",
-  "confidence": 0.95
+  "entity_type": "EQUITY"
 }
 ```
 
@@ -212,14 +230,17 @@ All errors result in a non-zero exit code for proper shell integration.
 
 ## Logging
 
-The application uses structured logging with JSON output:
+The application uses structured logging with GCP-compatible JSON output:
 
 ```json
 {
-  "event": "Resolving identifier",
+  "message": "Resolving identifier",
   "identifier": "US0378331005",
   "timestamp": "2026-02-13T14:30:00.123456Z",
-  "level": "info"
+  "logger": "entity_resolver.service.resolve_service",
+  "level": "info",
+  "level_number": 20,
+  "severity": "INFO"
 }
 ```
 
