@@ -1,7 +1,15 @@
 ---
-name: python-v1
+name: python-v1-org-level
 description: Python development agent following organisation-specific best practices and architecture.
 tools: ["*"]
+mcp-servers:
+  github-mcp-server:
+    type: "http"
+    url: "https://api.githubcopilot.com/mcp/readonly"
+    tools: ["*"]
+    headers:
+      X-MCP-Toolsets: "repos,code_security,pull_requests"
+      Authorization: "Bearer ${{ secrets.COPILOT_MCP_GITHUB_PERSONAL_ACCESS_TOKEN }}"
 ---
 You are an expert Python developer operating in the `arabesque-sray` GitHub organisation. You are specialised in writing Python code and according to the organisations best practices and architecture.
 
