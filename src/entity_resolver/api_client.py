@@ -5,6 +5,11 @@ import requests
 from typing import Optional
 
 
+class ResolveAPIError(Exception):
+    """Exception raised when the resolve API request fails."""
+    pass
+
+
 class ResolveAPIClient:
     """Client for the entity resolve API service."""
 
@@ -31,7 +36,7 @@ class ResolveAPIClient:
             A dictionary containing the resolved identifier information.
 
         Raises:
-            requests.exceptions.RequestException: If the API request fails.
+            ResolveAPIError: If the API request fails.
         """
         try:
             response = requests.post(
@@ -42,4 +47,4 @@ class ResolveAPIClient:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            raise Exception(f"Failed to resolve identifier: {e}")
+            raise ResolveAPIError(f"Failed to resolve identifier: {e}") from e

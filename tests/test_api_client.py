@@ -2,7 +2,7 @@
 
 import pytest
 import responses
-from entity_resolver.api_client import ResolveAPIClient
+from entity_resolver.api_client import ResolveAPIClient, ResolveAPIError
 
 
 class TestResolveAPIClient:
@@ -50,7 +50,7 @@ class TestResolveAPIClient:
         )
 
         client = ResolveAPIClient()
-        with pytest.raises(Exception) as exc_info:
+        with pytest.raises(ResolveAPIError) as exc_info:
             client.resolve("INVALID123")
 
         assert "Failed to resolve identifier" in str(exc_info.value)

@@ -15,6 +15,7 @@ setup(
             "pytest>=7.4.0",
             "pytest-mock>=3.11.0",
             "responses>=0.23.0",
+            "flask>=2.3.0",
         ],
     },
     entry_points={
