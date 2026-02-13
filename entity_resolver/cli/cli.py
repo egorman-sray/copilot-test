@@ -1,12 +1,13 @@
 """Command-line interface for entity resolver."""
 
+import logging
 import sys
 
 import click
 import structlog
+from esgbook_py.logging.setup import setup as setup_logging
 
 from entity_resolver.config.config import Settings
-from entity_resolver.config.logging_config import configure_logging
 from entity_resolver.entity.entity import EntityIdentifier
 from entity_resolver.service.resolve_service import ResolveService
 
@@ -42,7 +43,7 @@ def resolve(
     IDENTIFIER: The company entity identifier to resolve
     """
     settings = Settings()
-    configure_logging(settings.log_level)
+    setup_logging(level=getattr(logging, settings.log_level.upper()))
 
     logger.info("Starting entity resolution", identifier=identifier, type=identifier_type)
 

@@ -13,7 +13,7 @@ dependencies = [
     "httpx>=0.27.0",
     "structlog>=24.0.0",
     "click>=8.1.0",
-    "python-json-logger>=2.0.0",
+    "esgbook-py @ git+https://github.com/arabesque-sray/esgbook-py.git",
 ]
 
 [project.optional-dependencies]
