@@ -17,6 +17,25 @@ Input
 MCP server 'atlassian': {"error":true,"message":"You don't have permission to connect via API token. Please ask your organization admin for access."}
 ```
 
+## mcp config
+
+in https://github.com/egorman-sray/copilot-test/settings/copilot/mcp
+
+add contents
+
+```
+{
+  "mcpServers": {
+    "atlassian": {
+      "type": "http",
+      "url": "https://mcp.atlassian.com/v2/mcp",
+      "tools": ["*"],
+      "headers": { "Authorization": "$COPILOT_MCP_ATLASSIAN_AUTH" }
+    }
+  }
+}
+```
+
 ## secrets
 
 in https://github.com/egorman-sray/copilot-test/settings/secrets/agents
