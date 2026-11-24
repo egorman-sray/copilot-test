@@ -3,7 +3,7 @@
 When reviewing a pull request, follow these steps systematically:
 
 ## 1. Locate and Fetch the Jira Ticket
-- Extract the Jira issue key (e.g., `PROJ-123`) from the PR title, branch name, or PR description.
+- Extract the Jira issue key (e.g., `BLUE-123`) from the PR title, branch name, or PR description.
 - Use the configured Jira MCP tool to retrieve the full ticket details, including the summary, description, acceptance criteria, and any relevant comments.
 - If no Jira issue key is found or the ticket cannot be retrieved, explicitly note this in the review summary before continuing with a standard code review.
 
